@@ -1,5 +1,6 @@
 package com.koderbit.andrestest.di.modules
 
+import com.koderbit.andrestest.HiGreetingApi
 import com.koderbit.andrestest.HiGreetingDatabase
 import com.koderbit.andrestest.IGreetingService
 import dagger.Binds
@@ -12,6 +13,6 @@ import dagger.hilt.components.SingletonComponent
 abstract class AbstractGreetingModule {
 
     @Binds
-    abstract fun provideGreeting(greetingImplementation: HiGreetingDatabase) : IGreetingService
+    abstract fun provideGreeting(greetingImplementation: HiGreetingApi) : IGreetingService
 
 }
