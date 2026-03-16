@@ -18,12 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.koderbit.andrestest.data.Animal
 import com.koderbit.andrestest.di.modules.RandomNumber
 import com.koderbit.andrestest.ui.theme.AndresTestTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -49,7 +51,9 @@ class MainActivity : ComponentActivity() {
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val greetingService: IGreetingService,
-    private val randomNumberService: RandomNumber
+    private val randomNumberService: RandomNumber,
+    @param:Named("Canino") private val animalInjected: Animal,
+    @param:Named("Felino") private val animalInjectedTwo: Animal
 ) : ViewModel() {
 
     private val _greeting = mutableStateOf<String?>(null)
@@ -58,11 +62,19 @@ class MainViewModel @Inject constructor(
     private val _randomNumber = mutableStateOf<Int?>(null)
     val randomNumber: State<Int?> = _randomNumber
 
+    private val _animal = mutableStateOf<String?>(null)
+    val animal: State<String?> = _animal
+
+    private val _animalTwo = mutableStateOf<String?>(null)
+    val animalTwo: State<String?> = _animalTwo
+
 
     fun initializeViewModel() {
         viewModelScope.launch {
             _greeting.value = greetingService.getGreeting()
             _randomNumber.value = randomNumberService.number
+            _animal.value = animalInjected.name
+            _animalTwo.value = animalInjectedTwo.name
         }
     }
 
@@ -83,6 +95,8 @@ fun MainActivityView(modifier: Modifier = Modifier, viewmodel: MainViewModel = h
     ) {
         Text(greeting.value ?: "No data")
         Text("Random number: ${number.value}")
+        Text("Animal: ${viewmodel.animal.value}")
+        Text("Animal Two: ${viewmodel.animalTwo.value}")
     }
 }
 
