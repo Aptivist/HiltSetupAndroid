@@ -7,6 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -93,10 +96,16 @@ fun MainActivityView(modifier: Modifier = Modifier, viewmodel: MainViewModel = h
     Column(
         modifier = modifier
     ) {
+
         Text(greeting.value ?: "No data")
         Text("Random number: ${number.value}")
-        Text("Animal: ${viewmodel.animal.value}")
-        Text("Animal Two: ${viewmodel.animalTwo.value}")
+        Text("Animal: ${viewmodel.animal.value}", style = MaterialTheme.typography.titleLarge)
+
+        BasicText("Animal Two: ${viewmodel.animalTwo.value}")
+
+        Button(onClick = {}) {
+            Text("Click me")
+        }
     }
 }
 
