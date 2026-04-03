@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -21,12 +22,16 @@ fun LoginView(vm : LoginViewModel = hiltViewModel()) {
     val username = remember { vm.username }
     val password = remember { vm.password }
     val error = remember { vm.error }
+    val status = remember { vm.status }
+    val statusColor = remember { vm.statusColor }
 
 
     LoginViewContent(modifier = Modifier.fillMaxSize(),
         username = username.value,
         password = password.value,
         error = error.value,
+        status = status.value,
+        statusColor = statusColor.value,
         onUsernameChanged = vm::onUsernameChanged,
         onPasswordChanged = vm::onPasswordChanged,
         onLoginClicked = vm::onLogin)
@@ -37,6 +42,8 @@ private fun LoginViewContent(modifier: Modifier = Modifier,
                              username : String,
                              password : String,
                              error : String?,
+                             status : String?,
+                             statusColor : Color,
                              onUsernameChanged: (String) -> Unit,
                              onPasswordChanged: (String) -> Unit,
                              onLoginClicked: () -> Unit) {
@@ -59,6 +66,10 @@ private fun LoginViewContent(modifier: Modifier = Modifier,
             Text(error, color = MaterialTheme.colorScheme.error)
         }
 
+        status?.let {
+            Text(it, color = statusColor)
+        }
+
 
     }
 }
@@ -70,6 +81,8 @@ fun LoginViewPreview() {
         username = "username",
         password = "password",
         error = null,
+        status = "Hi",
+        statusColor = Color.Black,
         onUsernameChanged = {},
         onPasswordChanged = {},
         onLoginClicked = {})

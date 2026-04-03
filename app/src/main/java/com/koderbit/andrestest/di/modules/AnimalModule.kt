@@ -1,6 +1,6 @@
 package com.koderbit.andrestest.di.modules
 
-import com.koderbit.andrestest.data.Animal
+import com.koderbit.andrestest.data.models.Animal
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.koderbit.andrestest.data.Animal
+import com.koderbit.andrestest.data.models.Animal
 import com.koderbit.andrestest.di.modules.RandomNumber
 import com.koderbit.andrestest.ui.theme.AndresTestTheme
 import dagger.hilt.android.AndroidEntryPoint
