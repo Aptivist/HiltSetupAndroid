@@ -17,7 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
-fun LoginView(vm : LoginViewModel = hiltViewModel()) {
+fun
+        LoginView(vm : LoginViewModel = hiltViewModel()) {
 
     val username = remember { vm.username }
     val password = remember { vm.password }

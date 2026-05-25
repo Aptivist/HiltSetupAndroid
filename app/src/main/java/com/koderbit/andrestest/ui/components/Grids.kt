@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.koderbit.andrestest.ListItem
 
 @Composable
 fun Grids(modifier: Modifier = Modifier) {

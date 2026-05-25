@@ -1,5 +1,6 @@
 package com.koderbit.andrestest
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -53,20 +54,29 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.koderbit.andrestest.ui.components.ColumnPlusLazy
 import com.koderbit.andrestest.ui.components.Grids
 import com.koderbit.andrestest.ui.components.MyCard
 import com.koderbit.andrestest.ui.components.MyCheckButton
+import com.koderbit.andrestest.ui.loginview.LoginView
 import com.koderbit.andrestest.ui.theme.AndresTestTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -79,13 +89,42 @@ class ComposeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AndresTestTheme {
-                val scrollableState = rememberScrollState()
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+                val navController = rememberNavController()
 
-                    Grids(modifier = Modifier.fillMaxSize().padding(paddingValues))
+                var isLoggedIn by remember { mutableStateOf(false) }
 
-                }
+                NavHost(navController = navController,
+                    startDestination = if (isLoggedIn) Screen.Home.route else Screen.Login.route,
+                    builder = {
+                        composable(Screen.Login.route) {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Column{
+                                    Text("Login Screen")
+                                    Button(onClick = { navController.navigate(Screen.Home.route) }) {
+                                        Text("Go to home")
+                                    }
+                                }
+                            }
+                        }
+                        composable(Screen.Home.route) {
+                            HomeView(Modifier.fillMaxSize()){
+                                navController.navigate(Screen.Settings.route, NavOptions.Builder().setPopUpTo(
+                                    Screen.Home.route, true).build())
+                            }
+                        }
+                        composable(Screen.Settings.route) {
+
+                            SettingsView(Modifier.fillMaxSize()){
+                                val route = when(it){
+                                    SettingsViewActions.NavigateToHome -> Screen.Home.route
+                                    SettingsViewActions.NavigateToLogin -> Screen.Login.route
+                                }
+                                navController.navigate(route, NavOptions.Builder().setPopUpTo(Screen.Home.route, true).build())
+                            }
+                        }
+                    })
+
             }
         }
     }
@@ -93,13 +132,56 @@ class ComposeActivity : ComponentActivity() {
 
 
 @Composable
-fun ListItem(modifier: Modifier = Modifier, position: Int) {
-
-    val counter = remember { mutableIntStateOf(0) }
-
-    Card(modifier = modifier.clickable(true, onClick = { counter.intValue++})) {
-        Text(modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .padding(16.dp), text = "I'm the $position card, count = ${counter.intValue}")
+fun HomeView(modifier: Modifier = Modifier, onNavigateToSettings : () -> Unit) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        Column{
+            Text("home Screen")
+            Button(onClick = onNavigateToSettings) {
+                Text("Go to settings")
+            }
+        }
     }
+}
+
+@Preview
+@Composable
+fun PreviewHomeView() {
+    HomeView(modifier = Modifier.fillMaxSize()) {}
+}
+
+@Composable
+fun SettingsView(modifier: Modifier, onSettingsViewAction : (SettingsViewActions) -> Unit){
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column {
+            Text("settings Screen")
+            Button(onClick = {
+                onSettingsViewAction.invoke(SettingsViewActions.NavigateToLogin)
+            }) {
+                Text("Go to login")
+            }
+            Button(onClick = {
+                onSettingsViewAction.invoke(SettingsViewActions.NavigateToHome)
+            }) {
+                Text("Go to home")
+            }
+        }
+    }
+}
+
+sealed class SettingsViewActions() {
+    data object NavigateToLogin : SettingsViewActions()
+    data object NavigateToHome : SettingsViewActions()
+}
+
+
+sealed class Screen(val route: String) {
+    data object Home: Screen("home")
+    data object Settings: Screen("settings")
+    data object Login: Screen("login")
+}
+
+enum class ScreenEnum(val route: String){
+    HOME("home"),
+    SETTINGS("settings"),
+    LOGIN("login")
 }
